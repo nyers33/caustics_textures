@@ -1,0 +1,11 @@
+<svg height="160" width="160" viewBox="0 0 160 160">
+	<style>
+		circle {
+		  mix-blend-mode: screen;
+		}
+	</style>
+	  
+	<circle cx="60" cy="60" r="40" fill="red"/>
+	<circle cx="100" cy="60" r="40" fill="lime"/>
+	<circle cx="80" cy="100" r="40" fill="blue"/>
+</svg> 

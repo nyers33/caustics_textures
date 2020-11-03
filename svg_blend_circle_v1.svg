@@ -1,0 +1,14 @@
+<svg height="160" width="160" viewBox="0 0 160 160">
+	<defs>
+		<filter id="Screen">
+			<feBlend mode="screen" in2="BackgroundImage" in="SourceGraphic"/>
+		</filter>
+	</defs>
+	
+	<rect x="0" y="0" width="160" height="160" fill="white" />
+	<g enable-background="new" >
+		<circle cx="60" cy="60" r="40" fill="red" filter="url(#Screen)"/>
+		<circle cx="100" cy="60" r="40" fill="lime" filter="url(#Screen)"/>
+		<circle cx="80" cy="100" r="40" fill="blue" filter="url(#Screen)"/>
+	</g>
+</svg> 

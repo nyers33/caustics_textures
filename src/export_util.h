@@ -327,22 +327,23 @@ void svgPlaneOutput(glm::vec4*& data, unsigned int nX, unsigned int nY, const st
 	std::ofstream svgFile;
 	svgFile.open(fileName, std::ios_base::out);
 	std::stringstream ss;
+	int resolution = 640;
 
-	ss << "<svg height=\"640\" width=\"640\">\n";
+	ss << "<svg height=\"" << resolution << "\" width=\"640\">\n";
 	ss << "\t<defs>\n";
 	ss << "\t<filter id=\"Screen\">\n";
 	ss << "\t\t<feBlend mode=\"screen\" in2=\"BackgroundImage\" in=\"SourceGraphic\" />\n";
 	ss << "\t</filter>\n";
 	ss << "\t</defs>\n";
+	ss << "\t<polygon points=\"0, 0 " << resolution << ", 0 " << resolution << ", " << resolution << " 0, " << resolution << "\" fill=\"rgb(255, 255, 255)\" stroke=\"none\" />\n";
 	ss << "\t<g enable-background=\"new\" >\n";
-	ss << "\t\t<polygon points=\"0, 0 640, 0 640, 640 0, 640\" fill=\"rgb(255, 255, 255)\" stroke=\"none\" />\n";
-
+	
 	std::string fillType = "\"none\"";
 	std::string strokeType = "\"none\" filter=\"url(#Screen)\"";
 
 	if (isShell)
 		strokeType = "\"black\"";
-	
+
 	int triColR, triColG, triColB;
 
 	for (unsigned int j = 0; j < nY - 1; ++j)
@@ -375,10 +376,16 @@ void svgPlaneOutput(glm::vec4*& data, unsigned int nX, unsigned int nY, const st
 			if (!isShell)
 				fillType = "\"rgb(" + std::to_string(triColR) + ", " + std::to_string(triColG) + ", " + std::to_string(triColB) + ")\"";
 
-			ss << "\t\t<polygon points=\"";
-			ss << 640.0f * (data[i0].x + 0.5f) << ", " << 640.0f * (data[i0].z + 0.5f) << " ";
-			ss << 640.0f * (data[i1].x + 0.5f) << ", " << 640.0f * (data[i1].z + 0.5f) << " ";
-			ss << 640.0f * (data[i2].x + 0.5f) << ", " << 640.0f * (data[i2].z + 0.5f) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";
+			for (int jTile = -1; jTile <= 1; ++jTile)
+			{
+				for (int iTile = -1; iTile <= 1; ++iTile)
+				{
+					ss << "\t\t<polygon points=\"";
+					ss << static_cast<float>(resolution) * (data[i0].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i0].z + 0.5f + static_cast<float>(jTile)) << " ";
+					ss << static_cast<float>(resolution) * (data[i1].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i1].z + 0.5f + static_cast<float>(jTile)) << " ";
+					ss << static_cast<float>(resolution) * (data[i2].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i2].z + 0.5f + static_cast<float>(jTile)) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";
+				}
+			}
 
 			if (tri1_col.x > 255.0f)
 				triColR = 255;
@@ -395,10 +402,16 @@ void svgPlaneOutput(glm::vec4*& data, unsigned int nX, unsigned int nY, const st
 			if (!isShell)
 				fillType = "\"rgb(" + std::to_string(triColR) + ", " + std::to_string(triColG) + ", " + std::to_string(triColB) + ")\"";
 
-			ss << "\t\t<polygon points=\"";
-			ss << 640.0f * (data[i1].x + 0.5f) << ", " << 640.0f * (data[i1].z + 0.5f) << " ";
-			ss << 640.0f * (data[i2].x + 0.5f) << ", " << 640.0f * (data[i2].z + 0.5f) << " ";
-			ss << 640.0f * (data[i3].x + 0.5f) << ", " << 640.0f * (data[i3].z + 0.5f) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";
+			for (int jTile = -1; jTile <= 1; ++jTile)
+			{
+				for (int iTile = -1; iTile <= 1; ++iTile)
+				{
+					ss << "\t\t<polygon points=\"";
+					ss << static_cast<float>(resolution) * (data[i1].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i1].z + 0.5f + static_cast<float>(jTile)) << " ";
+					ss << static_cast<float>(resolution) * (data[i2].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i2].z + 0.5f + static_cast<float>(jTile)) << " ";
+					ss << static_cast<float>(resolution) * (data[i3].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i3].z + 0.5f + static_cast<float>(jTile)) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";
+				}
+			}
 		}
 
 		int i0 = (nX - 1) + (j + 0) * nX;
@@ -427,15 +440,42 @@ void svgPlaneOutput(glm::vec4*& data, unsigned int nX, unsigned int nY, const st
 		if (!isShell)
 			fillType = "\"rgb(" + std::to_string(triColR) + ", " + std::to_string(triColG) + ", " + std::to_string(triColB) + ")\"";
 
-		ss << "\t\t<polygon points=\"";
-		ss << 640.0f * (data[i0].x + 0.5f) << ", " << 640.0f * (data[i0].z + 0.5f) << " ";
-		ss << 640.0f * (data[i1].x + 1.5f) << ", " << 640.0f * (data[i1].z + 0.5f) << " ";
-		ss << 640.0f * (data[i2].x + 0.5f) << ", " << 640.0f * (data[i2].z + 0.5f) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";
+		for (int jTile = -1; jTile <= 1; ++jTile)
+		{
+			for (int iTile = -1; iTile <= 1; ++iTile)
+			{
+				ss << "\t\t<polygon points=\"";
+				ss << static_cast<float>(resolution) * (data[i0].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i0].z + 0.5f + static_cast<float>(jTile)) << " ";
+				ss << static_cast<float>(resolution) * (data[i1].x + 1.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i1].z + 0.5f + static_cast<float>(jTile)) << " ";
+				ss << static_cast<float>(resolution) * (data[i2].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i2].z + 0.5f + static_cast<float>(jTile)) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";
+			}
+		}
 
-		ss << "\t\t<polygon points=\"";
-		ss << 640.0f * (data[i1].x + 1.5f) << ", " << 640.0f * (data[i1].z + 0.5f) << " ";
-		ss << 640.0f * (data[i2].x + 0.5f) << ", " << 640.0f * (data[i2].z + 0.5f) << " ";
-		ss << 640.0f * (data[i3].x + 1.5f) << ", " << 640.0f * (data[i3].z + 0.5f) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";
+		if (tri1_col.x > 255.0f)
+			triColR = 255;
+		else
+			triColR = static_cast<int>(tri1_col.x);
+		if (tri1_col.y > 255.0f)
+			triColG = 255;
+		else
+			triColG = static_cast<int>(tri1_col.y);
+		if (tri1_col.z > 255.0f)
+			triColB = 255;
+		else
+			triColB = static_cast<int>(tri1_col.z);
+		if (!isShell)
+			fillType = "\"rgb(" + std::to_string(triColR) + ", " + std::to_string(triColG) + ", " + std::to_string(triColB) + ")\"";
+
+		for (int jTile = -1; jTile <= 1; ++jTile)
+		{
+			for (int iTile = -1; iTile <= 1; ++iTile)
+			{
+				ss << "\t\t<polygon points=\"";
+				ss << static_cast<float>(resolution) * (data[i1].x + 1.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i1].z + 0.5f + static_cast<float>(jTile)) << " ";
+				ss << static_cast<float>(resolution) * (data[i2].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i2].z + 0.5f + static_cast<float>(jTile)) << " ";
+				ss << static_cast<float>(resolution) * (data[i3].x + 1.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i3].z + 0.5f + static_cast<float>(jTile)) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";
+			}
+		}
 	}
 	{
 		for (unsigned int i = 0; i < nX - 1; ++i)
@@ -466,15 +506,42 @@ void svgPlaneOutput(glm::vec4*& data, unsigned int nX, unsigned int nY, const st
 			if (!isShell)
 				fillType = "\"rgb(" + std::to_string(triColR) + ", " + std::to_string(triColG) + ", " + std::to_string(triColB) + ")\"";
 
-			ss << "\t\t<polygon points=\"";
-			ss << 640.0f * (data[i0].x + 0.5f) << ", " << 640.0f * (data[i0].z + 0.5f) << " ";
-			ss << 640.0f * (data[i1].x + 0.5f) << ", " << 640.0f * (data[i1].z + 0.5f) << " ";
-			ss << 640.0f * (data[i2].x + 0.5f) << ", " << 640.0f * (data[i2].z + 1.5f) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";
+			for (int jTile = -1; jTile <= 1; ++jTile)
+			{
+				for (int iTile = -1; iTile <= 1; ++iTile)
+				{
+					ss << "\t\t<polygon points=\"";
+					ss << static_cast<float>(resolution) * (data[i0].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i0].z + 0.5f + static_cast<float>(jTile)) << " ";
+					ss << static_cast<float>(resolution) * (data[i1].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i1].z + 0.5f + static_cast<float>(jTile)) << " ";
+					ss << static_cast<float>(resolution) * (data[i2].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i2].z + 1.5f + static_cast<float>(jTile)) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";
+				}
+			}
 
-			ss << "\t\t<polygon points=\"";
-			ss << 640.0f * (data[i1].x + 0.5f) << ", " << 640.0f * (data[i1].z + 0.5f) << " ";
-			ss << 640.0f * (data[i2].x + 0.5f) << ", " << 640.0f * (data[i2].z + 1.5f) << " ";
-			ss << 640.0f * (data[i3].x + 0.5f) << ", " << 640.0f * (data[i3].z + 1.5f) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";	
+			if (tri1_col.x > 255.0f)
+				triColR = 255;
+			else
+				triColR = static_cast<int>(tri1_col.x);
+			if (tri1_col.y > 255.0f)
+				triColG = 255;
+			else
+				triColG = static_cast<int>(tri1_col.y);
+			if (tri1_col.z > 255.0f)
+				triColB = 255;
+			else
+				triColB = static_cast<int>(tri1_col.z);
+			if (!isShell)
+				fillType = "\"rgb(" + std::to_string(triColR) + ", " + std::to_string(triColG) + ", " + std::to_string(triColB) + ")\"";
+
+			for (int jTile = -1; jTile <= 1; ++jTile)
+			{
+				for (int iTile = -1; iTile <= 1; ++iTile)
+				{
+					ss << "\t\t<polygon points=\"";
+					ss << static_cast<float>(resolution) * (data[i1].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i1].z + 0.5f + static_cast<float>(jTile)) << " ";
+					ss << static_cast<float>(resolution) * (data[i2].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i2].z + 1.5f + static_cast<float>(jTile)) << " ";
+					ss << static_cast<float>(resolution) * (data[i3].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i3].z + 1.5f + static_cast<float>(jTile)) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";
+				}
+			}
 		}
 		
 		int i0 = (nX - 1) + (nY - 1) * nX;
@@ -503,15 +570,42 @@ void svgPlaneOutput(glm::vec4*& data, unsigned int nX, unsigned int nY, const st
 		if (!isShell)
 			fillType = "\"rgb(" + std::to_string(triColR) + ", " + std::to_string(triColG) + ", " + std::to_string(triColB) + ")\"";
 
-		ss << "\t\t<polygon points=\"";
-		ss << 640.0f * (data[i0].x + 0.5f) << ", " << 640.0f * (data[i0].z + 0.5f) << " ";
-		ss << 640.0f * (data[i1].x + 1.5f) << ", " << 640.0f * (data[i1].z + 0.5f) << " ";
-		ss << 640.0f * (data[i2].x + 0.5f) << ", " << 640.0f * (data[i2].z + 1.5f) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";
+		for (int jTile = -1; jTile <= 1; ++jTile)
+		{
+			for (int iTile = -1; iTile <= 1; ++iTile)
+			{
+				ss << "\t\t<polygon points=\"";
+				ss << static_cast<float>(resolution) * (data[i0].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i0].z + 0.5f + static_cast<float>(jTile)) << " ";
+				ss << static_cast<float>(resolution) * (data[i1].x + 1.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i1].z + 0.5f + static_cast<float>(jTile)) << " ";
+				ss << static_cast<float>(resolution) * (data[i2].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i2].z + 1.5f + static_cast<float>(jTile)) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";
+			}
+		}
 
-		ss << "\t\t<polygon points=\"";
-		ss << 640.0f * (data[i1].x + 1.5f) << ", " << 640.0f * (data[i1].z + 0.5f) << " ";
-		ss << 640.0f * (data[i2].x + 0.5f) << ", " << 640.0f * (data[i2].z + 1.5f) << " ";
-		ss << 640.0f * (data[i3].x + 1.5f) << ", " << 640.0f * (data[i3].z + 1.5f) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";
+		if (tri1_col.x > 255.0f)
+			triColR = 255;
+		else
+			triColR = static_cast<int>(tri1_col.x);
+		if (tri1_col.y > 255.0f)
+			triColG = 255;
+		else
+			triColG = static_cast<int>(tri1_col.y);
+		if (tri1_col.z > 255.0f)
+			triColB = 255;
+		else
+			triColB = static_cast<int>(tri1_col.z);
+		if (!isShell)
+			fillType = "\"rgb(" + std::to_string(triColR) + ", " + std::to_string(triColG) + ", " + std::to_string(triColB) + ")\"";
+
+		for (int jTile = -1; jTile <= 1; ++jTile)
+		{
+			for (int iTile = -1; iTile <= 1; ++iTile)
+			{
+				ss << "\t\t<polygon points=\"";
+				ss << static_cast<float>(resolution) * (data[i1].x + 1.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i1].z + 0.5f + static_cast<float>(jTile)) << " ";
+				ss << static_cast<float>(resolution) * (data[i2].x + 0.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i2].z + 1.5f + static_cast<float>(jTile)) << " ";
+				ss << static_cast<float>(resolution) * (data[i3].x + 1.5f + static_cast<float>(iTile)) << ", " << static_cast<float>(resolution) * (data[i3].z + 1.5f + static_cast<float>(jTile)) << "\" fill=" << fillType << " stroke=" << strokeType << "/>\n";
+			}
+		}
 	}
 
 	ss << "\t</g>\n";

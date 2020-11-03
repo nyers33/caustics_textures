@@ -219,8 +219,9 @@ int main()
 		plyPlaneOutput(positionCaustics, nX, nZ, "caustics_plane_" + padZeroSS.str() + ".ply");
 		plyPlaneBlendOutput(positionCaustics, nX, nZ, "caustics_plane_blend_color_" + padZeroSS.str() + ".ply");
 		
-		// inkscape can render wireframe without any issues
+		// Inkscape command line utility can convert wireframe (shell) svg to png 
 		// full triangle mesh with colors and blending, on the other hand, is too heavy to process
+		// Photoshop CC 2019 can rasterize both without any issue
 		#ifdef SVG_DEBUG
 		svgPlaneOutput(positionCaustics, nX, nZ, "caustics_texture_shell_" + padZeroSS.str() + ".svg", true);
 		svgPlaneOutput(positionCaustics, nX, nZ, "caustics_texture_color_" + padZeroSS.str() + ".svg", false);
